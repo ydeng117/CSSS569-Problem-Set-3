@@ -1,6 +1,15 @@
 
 
 library(shiny)
+library(gapminder)
+library(ggplot2)
+library(tidyverse)
+library(ggrepel)
+library(ggpubr)
+library(simcf)
+library(tile)
+library(RColorBrewer)
+library(firatheme)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
