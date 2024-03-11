@@ -6,43 +6,7 @@ library(ggpubr)
 library(RColorBrewer)
 library(firatheme)
 library(shiny)
-
-
-# Data import and cleaning
-## Import the Gapminder data
-TFR <-read.csv("Data/total_fertility.csv", check.names = FALSE)
-women_edu <- read.csv("Data/mean_years_in_school_women_of_reproductive_age.csv", check.names = FALSE)
-Geo_prop <- read.csv("Data/Data_Geographies_-_v2_-_by_Gapminder_-_list-of-countries-etc.csv")
-
-## Data Cleaning
-### Using the univeral country names for the Gapminder data
-TFR_country_period <- TFR %>% 
-    pivot_longer(!country, names_to = "Year", values_to = "Total_Fertility_Rate") %>% 
-    mutate(
-        country = case_when(
-            country == "UK" ~ "United Kingdom",
-            country == "USA" ~ "United States",
-            country == "UAE" ~ "United Arab Emirates",
-            country == "North Macedonia" ~ "Macedonia, FYR",
-            TRUE ~ country
-        )
-    )
-
-women_edu_country_period <- women_edu %>%  
-    pivot_longer(!country, names_to = "Year", values_to = "Mean_edu_year_women") %>%
-    mutate(
-        country = case_when(
-            country == "UK" ~ "United Kingdom",
-            country == "USA" ~ "United States",
-            country == "UAE" ~ "United Arab Emirates",
-            country == "North Macedonia" ~ "Macedonia, FYR",
-            TRUE ~ country
-        )
-    )
-
-## Data merging
-tfr_women_edu_df <- left_join(TFR_country_period, women_edu_country_period,by = join_by(country, Year)) %>%
-    left_join(Geo_prop, by = join_by(country == name))
+source("data_cleaning.R")
 
 
 # Define UI for application that draws a histogram
@@ -56,8 +20,17 @@ ui <- fluidPage(
     # Sidebar with a slider and select input for number of bins 
     sidebarLayout(
         sidebarPanel(
-            sliderInput(),
-            selectInput()
+          # choosing the years for the analysis
+            sliderInput("year",
+                        label = h3("Choose a year:"),
+                        min = 1950,
+                        max = 2021,
+                        value = 1996),
+          # Select a region for display
+            selectInput("region",
+                        label = h3("Filter by region:"),
+                        choices = unique(tfr_women_edu_df$four_regions),
+                        selected = "asia")
         ),
 
         # Show a plot of the generated distribution
