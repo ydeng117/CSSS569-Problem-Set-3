@@ -45,21 +45,17 @@ tfr_women_edu_df <- left_join(TFR_country_period, women_edu_country_period,by = 
     left_join(Geo_prop, by = join_by(country == name))
 
 
-
 # Define UI for application that draws a histogram
 ui <- fluidPage(
 
     # Application title
-    titlePanel("Old Faithful Geyser Data"),
+    titlePanel(""),
 
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
         sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
+            sliderInput(),
+            selectInput()
         ),
 
         # Show a plot of the generated distribution
@@ -68,6 +64,9 @@ ui <- fluidPage(
         )
     )
 )
+
+
+
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
