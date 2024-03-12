@@ -30,7 +30,12 @@ ui <- fluidPage(
             selectInput("region",
                         label = h3("Filter by region:"),
                         choices = unique(tfr_women_edu_df$four_regions),
-                        selected = "asia")
+                        selected = "asia"),
+          # Select a group of region for display
+          checkboxGroupInput("region_group",
+                             label = h3("Filter by region group:"),
+                             choices = unique(tfr_women_edu_df$four_regions),
+                             selected = "asia")
         ),
 
         # Show a plot of the generated distribution

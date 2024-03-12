@@ -40,4 +40,5 @@ women_edu_country_period <- women_edu %>%
 
 ## Data merging
 tfr_women_edu_df <- left_join(TFR_country_period, women_edu_country_period,by = join_by(country, Year)) %>%
-  left_join(Geo_prop, by = join_by(country == name))
+  left_join(Geo_prop, by = join_by(country == name)) %>%
+  drop_na()
