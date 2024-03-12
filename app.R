@@ -23,19 +23,16 @@ ui <- fluidPage(
           # choosing the years for the analysis
             sliderInput("year",
                         label = h3("Choose a year:"),
-                        min = 1950,
+                        min = 1970,
                         max = 2021,
                         value = 1996),
-          # Select a region for display
-            selectInput("region",
-                        label = h3("Filter by region:"),
-                        choices = unique(tfr_women_edu_df$four_regions),
-                        selected = "asia"),
           # Select a group of region for display
           checkboxGroupInput("region_group",
                              label = h3("Filter by region group:"),
                              choices = unique(tfr_women_edu_df$four_regions),
-                             selected = "asia")
+                             selected = "asia"),
+          hr(), # Add a horizontal rule
+          checkboxInput("smooth", "Add smoother")
         ),
 
         # Show a plot of the generated distribution
@@ -50,17 +47,60 @@ ui <- fluidPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-
-    output$distPlot <- renderPlot({
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white',
-             xlab = 'Waiting time to next eruption (in mins)',
-             main = 'Histogram of waiting times')
+    subset_data <- reactive({
+        req(input$region_group)
+        tfr_women_edu_df %>%
+            filter(four_regions %in% input$region_group) %>%
+            filter(Year == input$year)
     })
+    
+    output$distPlot <- renderPlot({
+        p <- ggplot(
+            subset_data(),
+            aes(
+                x = Mean_edu_year_women,
+                y = Total_Fertility_Rate,
+                color = four_regions
+            )
+        ) +
+            
+            list(
+                theme_fira(),
+                geom_point(alpha = 0.55, size = 3),
+                if (input$smooth)
+                    geom_smooth(
+                        inherit.aes = FALSE,
+                        aes(x = Mean_edu_year_women,
+                            y = Total_Fertility_Rate),
+                        method = "lm",
+                        se = TRUE,
+                        color = "black"
+                    ),
+                stat_cor(
+                    aes(label = paste(..rr.label.., ..p.label.., sep = "~`,`~")),
+                    label.x = 0.5,
+                    label.y = 0.9,
+                    size = 5,
+                    color = "black"
+                ),
+                geom_text_repel(
+                    aes(label = country),
+                    size = 2.5,
+                    alpha = 0.60,
+                    segment.size = 0.2
+                ),
+                scale_color_brewer(palette = "Set1"),
+                labs(title = "Relation between Total Fertility Rate and Women's Mean Education in Productive Age in 2002",
+                     x = "Women's Mean Education in Productive Age (15 to 44)",
+                     y = "Total Fertility Rate (babies per women)",
+                     color = "Region"),
+                scale_x_continuous(breaks = seq(0,16, by = 2)),
+                scale_y_continuous(breaks = seq(0,10, by = 2),limits = c(-.1,9))
+                
+            )
+        p
+        
+    }, res = 100)
 }
 
 # Run the application 
