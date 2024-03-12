@@ -4,7 +4,6 @@ library(tidyverse)
 library(ggrepel)
 library(ggpubr)
 library(RColorBrewer)
-library(firatheme)
 library(shiny)
 
 source("data_cleaning.R")
@@ -70,7 +69,7 @@ server <- function(input, output) {
         ) +
             
             list(
-                theme_fira(),
+                theme_minimal(),
                 geom_point(alpha = 0.55, size = 3),
                 if (input$smooth)
                     geom_smooth(
