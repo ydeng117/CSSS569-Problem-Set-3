@@ -95,7 +95,7 @@ server <- function(input, output) {
                 ),
                 scale_color_brewer(palette = "Set1"),
                 labs(
-                    title = "Relation between Total Fertility Rate and Women's Mean Education in Productive Age in 2002",
+                    title = "Relation between Total Fertility Rate and Women's Mean Education in Productive Age",
                     x = "Women's Mean Education in Productive Age (15 to 44)",
                     y = "Total Fertility Rate (babies per women)",
                     color = "Region"
