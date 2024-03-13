@@ -15,7 +15,9 @@ ui <- fluidPage(
     shinythemes::themeSelector(),
     
     # Application title
-    titlePanel("Relation between Total Fertility Rate and Women's Mean Education in Productive Age from 1970 to 2009"),
+    titlePanel(
+        "Relation between Total Fertility Rate and Women's Mean Education in Productive Age from 1970 to 2009"
+    ),
     
     # Sidebar with a slider and select input for number of bins
     sidebarLayout(
@@ -107,13 +109,13 @@ server <- function(input, output) {
                 ),
                 
                 if (input$facet)
-                    facet_wrap( ~ four_regions)
+                    facet_wrap(~ four_regions)
                 
             )
         
         p
         
-    }, res = 100)
+    }, height = 600, width = 900)
 }
 
 # Run the application
